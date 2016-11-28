@@ -43,7 +43,14 @@
 #include <QRegExp>
 
 #include <algorithm>
-static const bool mustReadOutputAnyway = true; // pclose seems to return the wrong error code unless we read the output
+
+
+namespace {
+
+const bool mustReadOutputAnyway = true; // pclose seems to return the wrong error code unless we read the output
+const QString ASSETS_BUNDLE_DIR = QStringLiteral("qt-bundle/");
+
+} /* namespace */
 
 void deleteRecursively(const QString &dirName)
 {
@@ -2072,7 +2079,7 @@ bool copyQtFiles(Options *options)
 
         // Copy other Qt dependencies
         QString libDestinationDirectory = libsDirectory + options->architecture + QLatin1Char('/');
-        QString assetsDestinationDirectory = QLatin1String("assets/--Added-by-androiddeployqt--/");
+        QString assetsDestinationDirectory = QLatin1String("assets/") + ASSETS_BUNDLE_DIR;
         foreach (QtDependency qtDependency, options->qtDependencies) {
             QString sourceFileName = qtDependency.absolutePath;
             QString destinationFileName;
@@ -2746,7 +2753,7 @@ bool generateAssetsFileList(const Options &options)
         fprintf(stdout, "Pregenerating entry list for assets file engine.\n");
 
     QString assetsPath = options.outputDirectory + QLatin1String("/assets/");
-    QString addedByAndroidDeployQtPath = assetsPath + QLatin1String("--Added-by-androiddeployqt--/");
+    QString addedByAndroidDeployQtPath = assetsPath + ASSETS_BUNDLE_DIR;
     if (!QDir().mkpath(addedByAndroidDeployQtPath)) {
         fprintf(stderr, "Failed to create directory '%s'", qPrintable(addedByAndroidDeployQtPath));
         return false;
